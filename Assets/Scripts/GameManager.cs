@@ -21,10 +21,14 @@ public class GameManager : MonoBehaviour, ICollectionHandler
     private int points;
     
     public PlayerController player;
+    public UIManager uIManager;      
+    public LevelLoader levelLoader;
 
-    public UIManager uIManager;
-    
-    
+    private int levelIndex;
+
+
+
+
     void Start()
     {
         player.collectionHandeler = this;
@@ -33,6 +37,7 @@ public class GameManager : MonoBehaviour, ICollectionHandler
         numberOdItemsToCollect = numberOfCollectables;
 
         uIManager.UpdatePoints(points, numberOdItemsToCollect);
+        levelIndex = SceneManager.GetActiveScene().buildIndex + 1;
     }
 
 
@@ -49,7 +54,8 @@ public class GameManager : MonoBehaviour, ICollectionHandler
 
         if(numberOfItemsCollected >= numberOfCollectables)
         {
-            SceneManager.LoadScene(SceneNames.Level1);
+            levelLoader.loadNextLevel(levelIndex);
+            //SceneManager.LoadScene(SceneNames.Level1);
         }
     }
 }
