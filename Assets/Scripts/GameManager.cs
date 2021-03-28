@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+
 
 public interface ICollectionHandler
 {
@@ -10,23 +14,44 @@ public interface ICollectionHandler
 public class GameManager : MonoBehaviour, ICollectionHandler
 {
 
-    public int NumberOfCollectables;
+    private int numberOfCollectables;
+    private int numberOfItemsCollected = 0;
+    private int numberOdItemsToCollect;
+
+    private int points;
+    
     public PlayerController player;
 
-    // Start is called before the first frame update
+    public UIManager uIManager;
+    
+    
     void Start()
     {
         player.collectionHandeler = this;
+        numberOfCollectables = GameObject.FindGameObjectsWithTag(Tags.Collectable).Length;
+
+        numberOdItemsToCollect = numberOfCollectables;
+
+        uIManager.UpdatePoints(points, numberOdItemsToCollect);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void PlayerDidCollectItem(GameObject item)
     {
+        points += item.GetComponent<Collectable>().NumberOfPoints();
+        numberOdItemsToCollect = numberOfCollectables - numberOfItemsCollected-1;
+        uIManager.UpdatePoints(points, numberOdItemsToCollect);
+        
+        Destroy(item);
+        numberOfItemsCollected++;
 
+        Debug.Log("Points" + points);
+
+        if(numberOfItemsCollected >= numberOfCollectables)
+        {
+            SceneManager.LoadScene(SceneNames.Level1);
+        }
     }
 }
+
+
